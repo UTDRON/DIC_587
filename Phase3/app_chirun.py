@@ -134,9 +134,10 @@ budget = st.number_input("Enter the budget of the movie")
 runtime = st.number_input("Enter the duration of the movie in mins")
 num_of_production = st.number_input("Enter the number of production companies involved")
 description = st.text_input("Enter the description of the movie")
-subjective = getSubjectivity(description)
-polarity = getPolarity(description)
-
+subjective = getSubjectivity(description) 
+polarity = getPolarity(description) #sentiment
+vote_average = st.number_input("Enter the vote average")
+vote_count = st.number_input("Enter the vote count")
 
 st.write('Select all the Genres the movie belongs to:')
 # option_1 = st.checkbox('Comedy')
@@ -203,10 +204,9 @@ st.write('Select all the Genres the movie belongs to:')
 
 # Chnages done by chirun
 ############
-vote_average = st.number_input("Enter the vote average")
-vote_count = st.number_input("Enter the vote count")
-sentiment = st.number_input("Enter the sentiment score")
-subjective = st.number_input("Enter the subjectivity score")
+
+# sentiment = st.number_input("Enter the sentiment score")
+# subjective = st.number_input("Enter the subjectivity score")
 #################
 ####################
 comedy = 1 if st.checkbox('Comedy', key='genre_comedy') else 0
@@ -247,7 +247,7 @@ genre_values = [comedy, drama, thriller, action, romance, adventure, crime, scie
 
 svm_model_popularity = pickle.load(open("saved_models/svm_model.sav", "rb"))
 
-input = np.array([budget, runtime, vote_average, vote_count, *genre_values, num_of_production, sentiment, subjective])
+input = np.array([budget, runtime, vote_average, vote_count, *genre_values, num_of_production, polarity, subjective])
 scaler = pickle.load(open("saved_models/scaler.sav", "rb"))
 
 input = scaler.transform(input.reshape(1, -1))
