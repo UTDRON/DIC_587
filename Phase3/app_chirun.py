@@ -123,6 +123,188 @@ if dataset:
     plt.xlim(1901, 2015)
     st.pyplot(plt.show())
 
+    #Removal of rows with zero valued popularity 
+    with st.expander("Average Popularity for Different Genre"):
+        # st.subheader("Average Popularity for Different Genre")
+        df_movie_no_0_popularity = df[(df[['popularity']] != 0).all(axis=1)]
+        columns_to_plot = df_movie_no_0_popularity.columns.values.tolist()[24:44]
+
+    #a dictionary to store average popularities for each genre
+        average_popularities = {}
+
+    #average popularity for each genre
+        for column in columns_to_plot:
+            average_popularity = df_movie_no_0_popularity[df_movie_no_0_popularity[column] == 1]['popularity'].mean()
+            average_popularities[column] = average_popularity
+        
+        sorted_popularities = dict(sorted(average_popularities.items(), key=lambda item: item[1]))
+
+        plt.figure(figsize=(9, 6))
+        plt.bar(sorted_popularities.keys(), sorted_popularities.values())
+        plt.xlabel('Genre')
+        plt.ylabel('Average Popularity')
+        plt.title('Average Popularity for Different Genre')
+        plt.xticks(rotation=45)
+        # plt.show()
+        st.pyplot(plt.show())
+
+    with st.expander("Average Ratings for Different Genre"):
+        # st.subheader("Average Ratings for Different Genre")
+        #Removal of rows with zero valued ratings
+        df_movie_no_0_ratings = df[(df[['vote_average']] != 0).all(axis=1)]
+        average_ratings = {}
+
+        for column in columns_to_plot:
+            average_rating = df_movie_no_0_ratings[df_movie_no_0_ratings[column] == 1]['vote_average'].mean()
+            average_ratings[column] = average_rating
+            
+        sorted_ratings = dict(sorted(average_ratings.items(), key=lambda item: item[1]))
+
+        plt.figure(figsize=(9, 6))
+        plt.bar(sorted_ratings.keys(), sorted_ratings.values())
+        plt.xlabel('Genre')
+        plt.ylabel('Average Ratings')
+        plt.title('Average Ratings for Different Genre')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.show())
+
+    with st.expander("Revenue vs. Budget for Movies by Genre"):
+        # st.subheader("Revenue vs. Budget for Movies by Genre")
+        #Removal of rows with zero valued budgets
+        df_movie_no_0_budgets = df[(df[['budget']] != 0).all(axis=1)]
+        average_budgets = {}
+
+        for column in columns_to_plot:
+            average_budget = df_movie_no_0_budgets[df_movie_no_0_budgets[column] == 1]['budget'].mean()
+            average_budgets[column] = average_budget
+            
+        sorted_budgets = dict(sorted(average_budgets.items(), key=lambda item: item[1]))
+            #Removal of rows with zero valued revenue
+        df_movie_no_0_revenue = df[(df[['revenue']] != 0).all(axis=1)]
+        average_revenues = {}
+
+        for column in columns_to_plot:
+            average_revenue = df_movie_no_0_revenue[df_movie_no_0_revenue[column] == 1]['revenue'].mean()
+            average_revenues[column] = average_revenue
+
+        sorted_revenues = dict(sorted(average_revenues.items(), key=lambda item: item[1]))
+        sorted_revenues.pop('TV Movie')
+        genres = list(sorted_revenues.keys())
+        sorted_budgets.pop('TV Movie')
+        index = np.arange(len(genres))
+
+        bar_width = 0.35
+
+        #grouped bar chart
+        plt.figure(figsize=(9, 6))
+        plt.bar(index - bar_width/2, list(sorted_revenues.values()), bar_width, label='Revenue', color='b', align='center')
+        plt.bar(index + bar_width/2, list(sorted_budgets.values()), bar_width, label='Budget', color='r', align='center')
+
+        plt.xlabel('Genre')
+        plt.ylabel('Amount (in billions)')
+        plt.title('Revenue vs. Budget for Movies by Genre')
+        plt.xticks(index, genres, rotation=45)
+        plt.legend()
+
+        plt.tight_layout()
+        st.pyplot(plt.show())
+
+    # scatter plot
+    #Removal of rows with zero valued runtime and popularity
+    with st.expander("Scatter Plot of runtime vs. Popularity"):
+        # st.subheader("Scatter Plot of runtime vs. Popularity")
+        df_for_plot = df[(df[['runtime','popularity']] != 0).all(axis=1)]
+        plt.figure(figsize=(8, 6))
+        plt.scatter(df_for_plot['runtime'], df_for_plot['popularity'], color='r', alpha=0.9, s = 10)
+        plt.xlabel('Runtime')
+        plt.ylabel('popularity')
+        plt.title('Scatter Plot of runtime vs. Popularity')
+        plt.grid(True)
+        # plt.show()
+        st.pyplot(plt.show())
+
+    with st.expander("Scatter Plot of No. of Production Companies vs. Budget"):
+        # st.subheader("Scatter Plot of No. of Production Companies vs. Budget")
+        df_for_plot = df[(df[['num_of_production_companies','budget']] != 0).all(axis=1)]
+        plt.figure(figsize=(8, 6))
+        plt.scatter(df_for_plot['num_of_production_companies'], df_for_plot['budget'], color='b', alpha=0.99, s = 10)
+        plt.xlabel('No. of Production Companies')
+        plt.ylabel('Budget')
+        plt.title('Scatter Plot of No. of Production Companies vs. Budget')
+        plt.grid(True)
+        st.pyplot(plt.show())
+
+    # scatter plot
+    #Removal of rows with zero valued runtime and revenue
+    with st.expander("Scatter Plot of runtime vs. revenue"):
+        # st.subheader("Scatter Plot of runtime vs. revenue")
+        df_for_plot = df[(df[['runtime','revenue']] != 0).all(axis=1)]
+        plt.figure(figsize=(8, 6))
+        plt.scatter(df_for_plot['runtime'], df_for_plot['revenue'], color='r', alpha=0.9, s = 10)
+        plt.xlabel('Runtime')
+        plt.ylabel('Revenue')
+        plt.title('Scatter Plot of runtime vs. revenue')
+        plt.grid(True)
+        st.pyplot(plt.show())
+
+    #box plot for 'budget'
+    #Removal of rows with zero valued budget
+    with st.expander("Box Plot for Budget"):
+        # st.subheader("Box Plot for Budget")
+        df_for_box_plot = df[(df[['budget']] != 0).all(axis=1)]
+        selected_columns = ['budget']
+
+        plt.figure(figsize=(5, 3))
+        df_for_box_plot[selected_columns].boxplot()
+        plt.title('Box Plot for Budget')
+        plt.ylabel('Value')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.show())
+
+    #box plot for 'revenue'
+    #Removal of rows with zero valued revenue
+    with st.expander("Box Plot for Revenue"):
+        st.subheader("Box Plot for Revenue")
+        df_for_box_plot = df[(df[['revenue']] != 0).all(axis=1)]
+        selected_columns = ['revenue']
+
+        plt.figure(figsize=(5, 3))
+        df_for_box_plot[selected_columns].boxplot()
+        plt.title('Box Plot for revenue')
+        plt.ylabel('Value')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.show())
+
+    #box plot for 'popularity'
+    #Removal of rows with zero valued popularity
+    with st.expander("Box Plot for Popularity"):
+        # st.subheader("Box Plot for Popularity")
+        df_for_box_plot = df[(df[['popularity']] != 0).all(axis=1)]
+        selected_columns = ['popularity']
+
+        plt.figure(figsize=(5, 3))
+        df_for_box_plot[selected_columns].boxplot()
+        plt.title('Box Plot for popularity')
+        plt.ylabel('Value')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.show())
+
+    #box plot for 'vote_average'
+    #Removal of rows with zero valued vote_average
+    with st.expander("Box Plot for Vote Average"):
+        # st.subheader("Box Plot for Vote Average")
+        df_for_box_plot = df[(df[['vote_average']] != 0).all(axis=1)]
+        selected_columns = ['vote_average']
+
+        plt.figure(figsize=(5, 3))
+        df_for_box_plot[selected_columns].boxplot()
+        plt.title('Box Plot for vote_average')
+        plt.ylabel('Value')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.show())
+
+
+
 # Visualization pane at the top
 st.header("Popularity and Revenue prediction")
 loaded_model =  pickle.load(open("trained_model_popularity.sav", "rb"))
@@ -139,7 +321,7 @@ polarity = getPolarity(description) #sentiment
 vote_average = st.number_input("Enter the vote average")
 vote_count = st.number_input("Enter the vote count")
 
-st.write('Select all the Genres the movie belongs to:')
+# st.write('Select all the Genres the movie belongs to:')
 # option_1 = st.checkbox('Comedy')
 # if option_1:
 #    comedy = 1
@@ -209,6 +391,7 @@ st.write('Select all the Genres the movie belongs to:')
 # subjective = st.number_input("Enter the subjectivity score")
 #################
 ####################
+st.write('Select all the Genres the movie belongs to:')
 comedy = 1 if st.checkbox('Comedy', key='genre_comedy') else 0
 drama = 1 if st.checkbox('Drama', key='genre_drama') else 0
 thriller = 1 if st.checkbox('Thriller', key='genre_thriller') else 0
@@ -241,14 +424,15 @@ if(st.button('Predict Popularity and Revenue')):
     input = scaler_revenue.transform(input.reshape(1, -1))
     popular = loaded_model_revenue.predict(input)[0]
     st.text("Predicted revenue would be {}".format(popular))
+
 ##########################
 # Combine all genre values into a list
 genre_values = [comedy, drama, thriller, action, romance, adventure, crime, science_fiction, horror, family, fantasy, mystery, animation, history, music, war, documentary, western, foreign]
 
-svm_model_popularity = pickle.load(open("saved_models/svm_model.sav", "rb"))
+svm_model_popularity = pickle.load(open("svm_model.sav", "rb"))
 
 input = np.array([budget, runtime, vote_average, vote_count, *genre_values, num_of_production, polarity, subjective])
-scaler = pickle.load(open("saved_models/scaler.sav", "rb"))
+scaler = pickle.load(open("scaler.sav", "rb"))
 
 input = scaler.transform(input.reshape(1, -1))
 
@@ -263,6 +447,27 @@ if st.button('Predict Popularity with SVM'):
         st.error("The movie is unlikely to be popular.")
 #------------
 #till here
+
+### pratik's xgboost
+# Combine all genre values into a list
+genre_values = [drama, comedy, thriller, action, romance, adventure, crime, science_fiction, horror, family, fantasy, mystery, animation, history, music, war, documentary, western, foreign]
+
+loaded_model_hit_miss =  pickle.load(open("best_xgb_model.sav", "rb"))
+
+input = np.array([budget, runtime, vote_average, vote_count, *genre_values, num_of_production, polarity, subjective])
+# scaler = pickle.load(open("saved_models/scaler.sav", "rb"))
+
+input = scaler.transform(input.reshape(1, -1))
+
+if st.button('Predict Hit/Miss/Average with XGBOOST'):
+    prediction = loaded_model_hit_miss.predict(input)
+    # Handle the prediction output (adjust based on your labels)
+    if prediction == 2:
+       st.success("With the following fields the movie would be hit")
+    elif prediction == 1:
+       st.error("With the following fields the movie would be average")
+    else:
+      st.error("With the following fields the movie would be a miss")
 
 
 
